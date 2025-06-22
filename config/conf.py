@@ -18,6 +18,7 @@ def get_checked_env(env_name):
 OPENAI_TOKEN = get_checked_env('OPENAI_TOKEN')
 TEST_BOT_TOKEN = get_checked_env('TEST_BOT_TOKEN')
 PROD_BOT_TOKEN = get_checked_env('PROD_BOT_TOKEN')
+DB_PATH = get_checked_env('DB_PATH')
 ADMINS = get_checked_env('ADMINS')
 STAND = str(os.getenv('STAND'))
 

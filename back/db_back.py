@@ -65,3 +65,33 @@ def get_user_dict(chat_id: str) -> dict[str, str] | None:
     except sqlite3.Error as error:
         print(f'Error getting user dict: {error}')
         return None
+
+
+def add_word_for_user(chat_id: str,
+                      word: str,
+                      translation: str) -> None:
+    """Add a new word-translation pair for the user.
+
+    Args:
+        chat_id (str): Telegram chat ID of the user.
+        word (str): The word to add.
+        translation (str): The translation of the word.
+    """
+    get_user_id_query = 'SELECT id FROM users WHERE chat_id = ?'
+    insert_word_query = '''
+        INSERT INTO dicts (user_id, word, translation)
+        VALUES (?, ?, ?)
+    '''
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
+            cursor.execute(get_user_id_query, (chat_id,))
+            row = cursor.fetchone()
+            if row is None:
+                print(f'User with chat_id {chat_id} not found.')
+                return
+            user_id = row[0]
+            cursor.execute(insert_word_query, (user_id, word, translation))
+            conn.commit()
+    except sqlite3.Error as error:
+        print(f'Error adding word: {error}')

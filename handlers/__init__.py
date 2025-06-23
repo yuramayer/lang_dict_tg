@@ -4,3 +4,4 @@
 
 from .start_admin import start_admin_router
 from .start_not_admin import start_not_admin_router
+from .send_words import send_words_router

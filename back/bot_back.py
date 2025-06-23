@@ -24,3 +24,20 @@ def check_word_message(
     )
 
     return txt
+
+
+def create_start_message() -> str:
+    """Creates start message describing the bot"""
+
+    txt = (
+        'Я помогаю хранить и вспоминать иностранные слова 📗\n\n'
+        'У меня есть 3 команды:\n'
+        '  👉🏻 <b>/add_word</b> - сохрани новую фразу в словарь\n'
+        '  👉🏾 <b>/get_word</b> - найди нужную фразу в словарике\n'
+        '  👉🏼 Нажми <b>/cancel</b> чтобы отменить любую операцию\n\n'
+        'Пока твой словарь пустой, добавь первое слово'
+        'с помощью /add_word 😉\n\n'
+        '\n\nБудут вопросы - обращайся <b>@botrqst</b>'
+    )
+
+    return txt

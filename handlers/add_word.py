@@ -8,7 +8,7 @@ from filters.admin_checker import IsAdmin
 from config.conf import admins_ids
 from states import AddWord
 from keyboards.approve_keyboard import approve_kb
-from back.db_back import add_word_for_user
+from back.db_back import add_word_for_user, user_exists, add_user
 from back.bot_back import check_word_message
 
 add_word_router = Router()
@@ -21,6 +21,10 @@ add_word_router.message.filter(
 async def ask_word(message: Message, state: FSMContext):
     """Bot asks what word user wants to add"""
     await state.clear()
+    chat_id = str(message.from_user.id)
+    if not user_exists(chat_id):
+        add_user(chat_id)
+        await message.answer('Словарь готов к работе 💫')
     await message.answer('Какое слово добавить?')
     await state.set_state(AddWord.add_word)
 

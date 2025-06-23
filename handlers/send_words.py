@@ -6,7 +6,7 @@ from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
 from filters.admin_checker import IsAdmin
 from config.conf import admins_ids
-from back.db_back import get_user_dict
+from back.db_back import get_user_dict, user_exists, add_user
 from back.gpt_back import find_relevant_words
 from back.bot_back import create_words_message
 from states import GetWord
@@ -22,6 +22,10 @@ send_words_router.message.filter(
 async def get_words(message: Message, state: FSMContext):
     """Bot asks user for the word"""
     await state.clear()
+    chat_id = str(message.from_user.id)
+    if not user_exists(chat_id):
+        add_user(chat_id)
+        await message.answer('Словарь готов к работе 💫')
     await message.answer('Какое слово найти?')
     await state.set_state(GetWord.get_word)
 

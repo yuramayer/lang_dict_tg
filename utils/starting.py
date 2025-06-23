@@ -1,7 +1,8 @@
 """Methods running when the bot is starting"""
 
 from bot import bot
-from config.conf import admins_ids
+from config.conf import admins_ids, DB_PATH
+from back.db_back import is_checked_db, create_tables
 
 
 async def on_startup():
@@ -9,3 +10,11 @@ async def on_startup():
 
     for admin_id in admins_ids:
         await bot.send_message(admin_id, 'Бот включён 😎')
+
+    if not is_checked_db():
+        with open(DB_PATH, 'w', encoding='utf-8') as db:
+            db.close()  # Создаём пустую БД, если файла нет
+    create_tables()
+
+    for admin_id in admins_ids:
+        await bot.send_message(admin_id, 'База успешно подключена ✌🏻')

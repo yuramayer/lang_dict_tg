@@ -1,5 +1,6 @@
 """Methods for the sqlite database"""
 
+import os
 import sqlite3
 from config.conf import DB_PATH
 
@@ -52,7 +53,7 @@ def get_user_dict(chat_id: str) -> dict[str, str] | None:
     """
     query = """
         SELECT d.word, d.translation
-        FROM dicts d
+        FROM words d
         JOIN users u ON d.user_id = u.id
         WHERE u.chat_id = ?
     """
@@ -79,7 +80,7 @@ def add_word_for_user(chat_id: str,
     """
     get_user_id_query = 'SELECT id FROM users WHERE chat_id = ?'
     insert_word_query = '''
-        INSERT INTO dicts (user_id, word, translation)
+        INSERT INTO words (user_id, word, translation)
         VALUES (?, ?, ?)
     '''
     try:
@@ -95,3 +96,65 @@ def add_word_for_user(chat_id: str,
             conn.commit()
     except sqlite3.Error as error:
         print(f'Error adding word: {error}')
+
+
+def is_checked_db() -> bool:
+    """Check if the database file exists and is accessible."""
+    if not os.path.isfile(DB_PATH):
+        print(f'Database file not found: {DB_PATH}')
+        return False
+
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            conn.execute('PRAGMA foreign_keys = ON')
+        return True
+    except sqlite3.Error as e:
+        print(f'Error opening database: {e}')
+        return False
+
+
+def table_exists(conn: sqlite3.Connection, table_name: str) -> bool:
+    """Check if a table exists in the database.
+
+    Args:
+        conn (sqlite3.Connection): Active DB connection.
+        table_name (str): Table name to check.
+
+    Returns:
+        bool: True if table exists, False otherwise.
+    """
+    query = "SELECT name FROM sqlite_master WHERE type='table' AND name=?"
+    cursor = conn.execute(query, (table_name,))
+    return cursor.fetchone() is not None
+
+
+def create_tables() -> None:
+    """Create required tables if they don't exist."""
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            conn.execute('PRAGMA foreign_keys = ON')
+
+            if not table_exists(conn, 'users'):
+                conn.execute('''
+                    CREATE TABLE users (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        chat_id TEXT NOT NULL UNIQUE
+                    )
+                ''')
+
+            if not table_exists(conn, 'words'):
+                conn.execute('''
+                    CREATE TABLE words (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        user_id INTEGER NOT NULL,
+                        word TEXT NOT NULL,
+                        translation TEXT NOT NULL,
+                        FOREIGN KEY (user_id) REFERENCES users(id)
+                             ON DELETE CASCADE
+                    )
+                ''')
+
+            print('Database and tables initialized.')
+
+    except sqlite3.Error as e:
+        print(f'Error creating tables: {e}')

@@ -34,8 +34,18 @@ async def find_suitable_words(
     user_word = message.text
     chat_id = message.from_user.id
     user_words = get_user_dict(chat_id)
+    if user_words == {}:
+        await message.answer('У тебя пока нет слов в базе 🤔')
+        await state.clear()
+        return
     relevant_words = find_relevant_words(
         user_words, user_word)
-    msg = create_words_message(relevant_words)
+    relevant_dict = {key: value for key, value in user_words.items()
+                     if key in relevant_words}
+    if relevant_dict == {}:
+        await message.answer('У тебя в словаре нет подходящих слов 🤷🏼‍♀️')
+        await state.clear()
+        return
+    msg = create_words_message(relevant_dict)
 
-    message.answer(msg)
+    await message.answer(msg)

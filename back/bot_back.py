@@ -11,3 +11,16 @@ def create_words_message(
         txt += f' - <b>{key}</b> - {value}\n'
 
     return txt
+
+
+def check_word_message(
+        word: str, translation: str) -> str:
+    """Creates pretty text for checking the new word"""
+
+    txt = (
+        '🔖 Ты сохраняешь новую пару:\n\n'
+        f'<b>{word}</b> - <b>{translation}</b>'
+        '\n\nВсё верно?'
+    )
+
+    return txt

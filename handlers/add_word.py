@@ -9,6 +9,7 @@ from config.conf import admins_ids
 from states import AddWord
 from keyboards.approve_keyboard import approve_kb
 from back.db_back import add_word_for_user
+from back.bot_back import check_word_message
 
 add_word_router = Router()
 add_word_router.message.filter(
@@ -28,7 +29,7 @@ async def ask_word(message: Message, state: FSMContext):
 async def ask_translation(message: Message, state: FSMContext):
     """Bot asks translation for the new word"""
     await state.update_data(add_word=message.text)
-    msg = f'Отправь транскрипцию для слова {message.text}'
+    msg = f'Отправь перевод для слова {message.text}'
     await message.answer(msg)
     await state.set_state(AddWord.add_translation)
 
@@ -41,10 +42,7 @@ async def ask_approve(message: Message,
         add_translation=message.text)
     word = await state.get_value('add_word')
     translation = await state.get_value('add_translation')
-    msg = (
-        f'Ты добавляешь пару: {word} - {translation}\n'
-        'Верно?'
-    )
+    msg = check_word_message(word, translation)
     await message.answer(msg, reply_markup=approve_kb())
     await state.set_state(AddWord.approved)
 
@@ -57,7 +55,9 @@ async def save_word(message: Message, state: FSMContext):
     translation = await state.get_value('add_translation')
     add_word_for_user(chat_id, word, translation)
     await state.clear()
-    await message.answer('Новое слово теперь в словаре 😌')
+    await message.answer('Новое слово теперь в словаре 😌',
+                         reply_markup=ReplyKeyboardRemove())
+
 
 @add_word_router.message(AddWord.approved, F.text == 'Нет')
 async def decline_word(message: Message, state: FSMContext):

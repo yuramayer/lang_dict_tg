@@ -3,13 +3,13 @@
 from aiogram import Router
 from aiogram.filters import Command
 from aiogram.types import Message
-from filters.admin_checker import IsAdmin
+from filters.admin_checker import NotAdmin
 from config.conf import admins_ids
 
 
 start_not_admin_router = Router()
 start_not_admin_router.message.filter(
-    IsAdmin(admins_ids)
+    NotAdmin(admins_ids)
 )
 
 

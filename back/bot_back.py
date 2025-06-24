@@ -41,3 +41,15 @@ def create_start_message() -> str:
     )
 
     return txt
+
+
+def create_end_message() -> str:
+    """Created the message sending in the end of the operations"""
+
+    txt = (
+        'Чем ещё могу помочь?\n\n'
+        '  👉🏻 <b>/add_word</b> - добавить новое слово\n'
+        '  👉🏾 <b>/get_word</b> - найти фразу в словаре\n'
+    )
+
+    return txt

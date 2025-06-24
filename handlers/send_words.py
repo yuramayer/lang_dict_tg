@@ -8,7 +8,7 @@ from filters.admin_checker import IsAdmin
 from config.conf import admins_ids
 from back.db_back import get_user_dict, user_exists, add_user
 from back.gpt_back import find_relevant_words
-from back.bot_back import create_words_message
+from back.bot_back import create_words_message, create_end_message
 from states import GetWord
 
 
@@ -53,3 +53,7 @@ async def find_suitable_words(
     msg = create_words_message(relevant_dict)
 
     await message.answer(msg)
+
+    end_msg = create_end_message()
+
+    await message.answer(end_msg)

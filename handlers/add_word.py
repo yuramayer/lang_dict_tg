@@ -9,7 +9,7 @@ from config.conf import admins_ids
 from states import AddWord
 from keyboards.approve_keyboard import approve_kb
 from back.db_back import add_word_for_user, user_exists, add_user
-from back.bot_back import check_word_message
+from back.bot_back import check_word_message, create_end_message
 
 add_word_router = Router()
 add_word_router.message.filter(
@@ -61,6 +61,8 @@ async def save_word(message: Message, state: FSMContext):
     await state.clear()
     await message.answer('Новое слово теперь в словаре 😌',
                          reply_markup=ReplyKeyboardRemove())
+    end_msg = create_end_message()
+    await message.answer(end_msg)
 
 
 @add_word_router.message(AddWord.approved, F.text == 'Нет')
@@ -68,7 +70,9 @@ async def decline_word(message: Message, state: FSMContext):
     """User decline the new word"""
     msg = 'Жаль 😿\n\nПопробуй ещё раз'
     await state.clear()
+    end_msg = create_end_message()
     await message.answer(msg, reply_markup=ReplyKeyboardRemove())
+    await message.answer(end_msg)
 
 
 @add_word_router.message(AddWord.approved)

@@ -2,7 +2,7 @@
 
 from aiogram import Router, F
 from aiogram.filters import Command
-from aiogram.types import Message
+from aiogram.types import Message, ReplyKeyboardRemove
 from aiogram.fsm.context import FSMContext
 from filters.admin_checker import IsAdmin
 from config.conf import admins_ids
@@ -28,7 +28,8 @@ async def get_words(message: Message, state: FSMContext):
     if not user_exists(chat_id):
         add_user(chat_id)
         await message.answer('Словарь готов к работе 💫')
-    await message.answer('Какое слово найти?')
+    await message.answer('Какое слово найти?',
+                         reply_markup=ReplyKeyboardRemove())
     await state.set_state(GetWord.get_word)
 
 

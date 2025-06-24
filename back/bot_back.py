@@ -53,3 +53,15 @@ def create_end_message() -> str:
     )
 
     return txt
+
+
+def create_all_words_message(
+        relevant_words: dict) -> str:
+    """Creates pretty text for the message with all the words"""
+
+    txt = '📚 Все твои слова:\n\n'
+
+    for key, value in relevant_words.items():
+        txt += f' - <b>{key}</b> - {value}\n'
+
+    return txt

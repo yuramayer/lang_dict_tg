@@ -58,4 +58,4 @@ async def find_suitable_words(
 
     msg = create_words_message(relevant_dict)
 
-    await message.answer(msg)
+    await message.answer(msg, reply_markup=menu_kb())

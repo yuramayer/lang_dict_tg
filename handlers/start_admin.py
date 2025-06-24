@@ -26,4 +26,4 @@ async def cmd_start(message: Message, state: FSMContext):
         add_user(chat_id)
         await message.answer('Словарь готов к работе 💫')
     msg = create_start_message()
-    await message.answer(msg, reply_markup=menu_kb)
+    await message.answer(msg, reply_markup=menu_kb())

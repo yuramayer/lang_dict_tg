@@ -1,6 +1,6 @@
 """Bot sends best suitable words for the user"""
 
-from aiogram import Router
+from aiogram import Router, F
 from aiogram.filters import Command
 from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
@@ -8,8 +8,9 @@ from filters.admin_checker import IsAdmin
 from config.conf import admins_ids
 from back.db_back import get_user_dict, user_exists, add_user
 from back.gpt_back import find_relevant_words
-from back.bot_back import create_words_message, create_end_message
+from back.bot_back import create_words_message
 from states import GetWord
+from keyboards.menu_keyboard import menu_kb, find_button
 
 
 send_words_router = Router()
@@ -18,6 +19,7 @@ send_words_router.message.filter(
 )
 
 
+@send_words_router.message(F.text == find_button)
 @send_words_router.message(Command('get_word'))
 async def get_words(message: Message, state: FSMContext):
     """Bot asks user for the word"""
@@ -39,7 +41,8 @@ async def find_suitable_words(
     chat_id = message.from_user.id
     user_words = get_user_dict(chat_id)
     if user_words == {}:
-        await message.answer('У тебя пока нет слов в базе 🤔')
+        await message.answer('У тебя пока нет слов в базе 🤔',
+                             reply_markup=menu_kb())
         await state.clear()
         return
     relevant_words = find_relevant_words(
@@ -47,17 +50,11 @@ async def find_suitable_words(
     relevant_dict = {key: value for key, value in user_words.items()
                      if key in relevant_words}
     if relevant_dict == {}:
-        await message.answer('У тебя в словаре нет подходящих слов 🤷🏼‍♀️')
+        await message.answer('У тебя в словаре нет подходящих слов 🤷🏼‍♀️',
+                             reply_markup=menu_kb())
         await state.clear()
-
-        end_msg = create_end_message()
-        await message.answer(end_msg)
-
         return
+
     msg = create_words_message(relevant_dict)
 
     await message.answer(msg)
-
-    end_msg = create_end_message()
-
-    await message.answer(end_msg)

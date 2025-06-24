@@ -6,7 +6,7 @@ from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
 from filters.admin_checker import IsAdmin
 from config.conf import admins_ids
-from back.bot_back import create_end_message
+from keyboards.menu_keyboard import menu_kb
 
 
 cancel_router = Router()
@@ -19,6 +19,5 @@ cancel_router.message.filter(
 async def cmd_cancel(message: Message, state: FSMContext):
     """User cancels the current state"""
     await state.clear()
-    await message.answer('Операция отменена 👌🏻')
-    end_msg = create_end_message()
-    await message.answer(end_msg)
+    await message.answer('Операция отменена 👌🏻',
+                         reply_markup=menu_kb())

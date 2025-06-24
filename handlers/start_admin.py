@@ -8,6 +8,8 @@ from filters.admin_checker import IsAdmin
 from config.conf import admins_ids
 from back.db_back import user_exists, add_user
 from back.bot_back import create_start_message
+from keyboards.menu_keyboard import menu_kb
+
 
 start_admin_router = Router()
 start_admin_router.message.filter(
@@ -24,4 +26,4 @@ async def cmd_start(message: Message, state: FSMContext):
         add_user(chat_id)
         await message.answer('Словарь готов к работе 💫')
     msg = create_start_message()
-    await message.answer(msg)
+    await message.answer(msg, reply_markup=menu_kb)

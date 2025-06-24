@@ -49,6 +49,10 @@ async def find_suitable_words(
     if relevant_dict == {}:
         await message.answer('У тебя в словаре нет подходящих слов 🤷🏼‍♀️')
         await state.clear()
+
+        end_msg = create_end_message()
+        await message.answer(end_msg)
+
         return
     msg = create_words_message(relevant_dict)
 

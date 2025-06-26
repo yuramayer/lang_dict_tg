@@ -5,7 +5,7 @@ from aiogram.filters import Command
 from aiogram.types import Message
 from filters.admin_checker import NotAdmin
 from config.conf import admins_ids
-
+from back.bot_back import create_not_admin_message
 
 start_not_admin_router = Router()
 start_not_admin_router.message.filter(
@@ -16,4 +16,5 @@ start_not_admin_router.message.filter(
 @start_not_admin_router.message(Command('start'))
 async def cmd_start_not_admin(message: Message):
     """Not admins want to use the bot"""
-    await message.answer('Это частный бот')
+    msg = create_not_admin_message()
+    await message.answer(msg)

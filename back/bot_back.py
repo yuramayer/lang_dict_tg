@@ -65,3 +65,19 @@ def create_all_words_message(
         txt += f' - <b>{key}</b> - {value}\n'
 
     return txt
+
+
+def create_not_admin_message() -> str:
+    """Creates the message for non-admin users"""
+
+    github_link = 'https://github.com/yuramayer/lang_dict_tg'
+    link_name = 'github.com/yuramayer/lang_dict_tg'
+
+    txt = (
+        '📖 Бот-словарик по ивриту\n\n'
+        'Бот предназначен для частного использования. '
+        'Разработчик бота: <b>@botrqst</b> 👨🏽‍💻 '
+        f'Код бота на GitHub: <a href="{github_link}">{link_name}</a>'
+    )
+
+    return txt

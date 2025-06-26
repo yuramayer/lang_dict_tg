@@ -1,6 +1,6 @@
 """Bot reacts to the command /start for the others"""
 
-from aiogram import Router
+from aiogram import Router, F
 from aiogram.filters import Command
 from aiogram.types import Message
 from filters.admin_checker import NotAdmin
@@ -13,6 +13,7 @@ start_not_admin_router.message.filter(
 )
 
 
+@start_not_admin_router.message(F.text)
 @start_not_admin_router.message(Command('start'))
 async def cmd_start_not_admin(message: Message):
     """Not admins want to use the bot"""
